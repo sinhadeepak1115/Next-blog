@@ -1,6 +1,8 @@
 "use client";
+import { useSession } from "next-auth/react";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import ReactTextareaAutosize from "react-textarea-autosize";
+import axios from "axios";
 
 interface FormData {
   title: string;
@@ -13,6 +15,8 @@ const FormNewPost = () => {
     content: "",
   });
 
+  const { data } = useSession();
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -21,9 +25,14 @@ const FormNewPost = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
+    try {
+      const response = await axios.post("/api/post", formData);
+      console.log(response.data);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -55,6 +64,7 @@ const FormNewPost = () => {
             <div className="text-center">
               <div className="px-2">
                 <button
+                  disabled={!data?.user?.email}
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 >
