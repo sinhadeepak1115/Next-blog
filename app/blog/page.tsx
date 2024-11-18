@@ -1,7 +1,16 @@
-import { posts } from "@/data/posts";
+import prisma from "@/lib/db";
 import Link from "next/link";
 
-const BlogPage = () => {
+const BlogPage = async () => {
+  const posts = await prisma.post.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      author: true,
+    },
+  });
+  console.log(posts);
   return (
     <>
       <div className="max-w-4xl mx-auto py-8">
@@ -19,7 +28,7 @@ const BlogPage = () => {
                 {post.title}
               </h2>
               <p className="text-black text p-2">{post.content}</p>
-              <p className="p-2">Written by: {post.username}</p>
+              <p className="p-2">Written by: {post.author.name}</p>
             </div>
           </Link>
         ))}

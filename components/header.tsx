@@ -1,6 +1,9 @@
+import { getCurrentUser } from "@/lib/session";
 import Link from "next/link";
+import { LogoutButton } from "./logoutButton";
 
-const Header = () => {
+const Header = async () => {
+  const user = await getCurrentUser();
   return (
     <div>
       <header className="bg-blue-500 p-4">
@@ -17,14 +20,21 @@ const Header = () => {
                 Blogs
               </Link>
             </li>
-            <li>
-              <Link
-                href="/api/auth/signin"
-                className="px-2 hover:text-white underline"
-              >
-                Login
-              </Link>
-            </li>
+            {user?.name ? (
+              <>
+                <LogoutButton />
+                <div className="text-white font-bold">{user?.name}</div>
+              </>
+            ) : (
+              <li>
+                <Link
+                  href="/api/auth/signin"
+                  className="px-2 hover:text-white underline"
+                >
+                  Login
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
       </header>

@@ -24,8 +24,7 @@ export async function POST(req: Request) {
         authorEmail: user.email,
       },
     });
-    console.log(newPost);
-    return NextResponse.json(newPost);
+    return NextResponse.json({ newPost }, { status: 200 });
     //eslint-disable-next-line
   } catch (e) {
     return NextResponse.json({ error: `Error: ${e}` }, { status: 500 });

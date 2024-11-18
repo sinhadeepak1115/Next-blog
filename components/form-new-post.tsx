@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface FormData {
   title: string;
@@ -15,6 +16,7 @@ const FormNewPost = () => {
     content: "",
   });
 
+  const router = useRouter();
   const { data } = useSession();
 
   const handleChange = (
@@ -29,6 +31,9 @@ const FormNewPost = () => {
     e.preventDefault();
     try {
       const response = await axios.post("/api/post", formData);
+      if (response.status === 200) {
+        router.push(`/blog/${response.data.newPost.id}`);
+      }
       console.log(response.data);
     } catch (e) {
       console.error(e);
