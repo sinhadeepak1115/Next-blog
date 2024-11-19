@@ -1,4 +1,5 @@
 import prisma from "@/lib/db";
+import { format } from "date-fns";
 import { FC } from "react";
 
 interface CommentsProps {
@@ -9,6 +10,7 @@ const Comments: FC<CommentsProps> = async ({ postId }) => {
     where: { postId },
     include: { author: true },
   });
+  console.log(comments);
 
   return (
     <div className="mt-8">
@@ -17,10 +19,14 @@ const Comments: FC<CommentsProps> = async ({ postId }) => {
         {comments.map((comment) => (
           <li key={comment.id} className="mb-4 bg-slate-300 p-2 rounded">
             <div className="flex items-center mb-2">
-              <div className="text-blue-500 font-bold mr-2">Jone Jones</div>
-              <div className="text-slate-500">12 Dec 2021</div>
+              <div className="text-blue-500 font-bold mr-2">
+                {comment.author?.name}
+              </div>
+              <div className="text-slate-500">
+                {format(comment.createdAt, "MMMM d, yyyy")}
+              </div>
             </div>
-            <p>I gonna smash your Boy!!!</p>
+            <p>{comment.text}</p>
           </li>
         ))}
       </ul>

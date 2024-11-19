@@ -4,19 +4,28 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const user = await getCurrentUser();
+
   try {
-    //   if (!user?.email) {
-    //     return NextResponse.json(
-    //       { message: "You need to be logged in to create a comment." },
-    //       { status: 401 },
-    //     );
-    //   }
-    const { postId, content } = await req.json();
+    if (!user?.email) {
+      return NextResponse.json(
+        { message: "Not Authenticated!" },
+        { status: 401 },
+      );
+    }
+
+    const { postId, text } = await req.json();
     const newPost = await prisma.comment.create({
-      data: { postId, content, authorEmail: user.email },
+      data: {
+        postId,
+        text,
+        authorEmail: user.email,
+      },
     });
     return NextResponse.json({ newPost }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: `Error: ${error}` }, { status: 500 });
+    return NextResponse.json(
+      { message: `Someting went wrong here it is ${error}` },
+      { status: 500 },
+    );
   }
 }
